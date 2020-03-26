@@ -36,7 +36,7 @@ To access to the cluster you need to get the API Credentials with the following 
 Download the api_credentials.json locally and have it ready to get the information required for the setup.
 
 A quick look for the help will list the current available options.
-To start the script, just use: `python3 onboardTetration.py --url https://tet-cluster-ip --credential api_credentials.json`
+To start the script, just use: `python3 manifest2inventories.py --url https://tet-cluster-ip --credential api_credentials.json --yaml Manifest.yaml`
 
 ## Files
 Need to prepare K8s Manifest YAML file. The sample Manifest file is in the github folder.

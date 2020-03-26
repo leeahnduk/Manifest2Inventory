@@ -11,6 +11,7 @@ import time
 import csv
 import yaml
 import pandas as pd
+from columnar import columnar
 
 # =================================================================================
 # python3 manifest2inventories.py --url https://192.168.30.4 --credential api_credentials.json --yaml multicloud.yaml
@@ -40,6 +41,26 @@ def CreateRestClient():
                     credentials_file=args.credential, verify=False)
     return rc
 
+def GetVRFs(rc):
+    # Get all VRFs in the cluster
+    resp = rc.get('/vrfs')
+
+    if resp.status_code != 200:
+        print("Failed to retrieve app scopes")
+        print(resp.status_code)
+        print(resp.text)
+    else:
+        return resp.json()
+
+def GetRootScope(vrfs):
+    #return list of Root Scopes and its' names
+    rootScopes = []
+    headers = ['Root Scope Name', 'VRF ID']
+    for vrf in vrfs:
+        rootScopes.append([vrf["name"] , vrf["vrf_id"]])
+    table = columnar(rootScopes, headers, no_borders=False)
+    print(table)
+
 def GetApplicationScopes(rc):
     # Input:
     resp = rc.get('/app_scopes')
@@ -59,7 +80,10 @@ def GetAppScopeId(scopes,name):
 
 def CreateInventoryFilters(rc,scopes):
     inventoryDict = {}
-    ParentScope = input ("Which parent Scope (RootScope:SubScope) you want to define your inventory Filter: ") 
+    vrfs = GetVRFs(rc)
+    print ("\nHere are the names and VRF ID of all the root scopes in your cluster: ")
+    GetRootScope(vrfs)
+    ParentScope = input ("Which parent Scope you want to define your inventory Filter: ") 
     NameSpace = input ("Which NameSpace in K8s you defined your apps: ")
     with open(args.yaml, 'r') as yaml_in:
         yaml_object = yaml.load_all(yaml_in) # yaml_object will be a list or a dict
