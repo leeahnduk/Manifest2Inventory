@@ -120,7 +120,7 @@ def CreateInventoryFilters(rc,scopes):
                         "filters" : [
                             {
                                 "type": "eq",
-                                "field": "user_orchestrator_system/service_endpoint",
+                                "field": "user_orchestrator_system/service_name",
                                 "value": doc['metadata']['name']
                             },
                             {
